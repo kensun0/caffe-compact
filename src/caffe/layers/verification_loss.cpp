@@ -129,6 +129,16 @@ Dtype VerificationLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top
 	int offset = i*feat_len;
 	if(l1 == l2){
 		/* nothing */
+		Dtype norm2 = caffe_cpu_dot(feat_len, bottom_diff1+offset, bottom_diff1+offset);
+		Dtype norm = sqrt(norm2);
+		//if(norm > M_){
+			//memset(bottom_diff1+offset,0, sizeof(Dtype)*feat_len);
+			//memset(bottom_diff2+offset,0, sizeof(Dtype)*feat_len);
+		//}else{
+			//norm = (M_ - norm) / (norm+Dtype(FLT_MIN));
+		caffe_scal(feat_len, norm, bottom_diff1+offset);
+		caffe_scal(feat_len, norm, bottom_diff2+offset);
+		//}
 	}else{
 		Dtype norm2 = caffe_cpu_dot(feat_len, bottom_diff1+offset, bottom_diff1+offset);
 		Dtype norm = sqrt(norm2);
